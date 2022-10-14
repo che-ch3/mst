@@ -81,3 +81,21 @@ class Node:
         else:
             # TODO: Non-leaf level
             pass
+
+    def remove(self, key):
+        """Remove the key-value pair for the specified key"""
+        leaf = self.__get_leaf(key)
+        if self.level == 0:
+            # Handle the leaf-level
+            for i, item in enumerate(self.items):
+                if key == item.key:
+                    # this loop removes the corresponding item from the items
+                    self.items = self.items[:i] + self.items[(i+1):]
+                    # TODO call re-computation (splitting, ...)
+                    # TODO check if key already exists
+                    return
+            # The loop finished without identifying the proper position.
+            # TODO: throw error
+        else:
+            # TODO: Non-leaf level
+            pass

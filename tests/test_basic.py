@@ -58,6 +58,30 @@ class TestNodesBasic(unittest.TestCase):
         self.assertEqual(n.get(b'1'), b'31337')
         self.assertEqual(n.get(b'100'), b'100')
         self.assertTupleEqual(n.to_tuple(), ((b'0', b'1337'), (b'1', b'31337'), (b'100', b'100'), (b'4', b'13337')))
+    def test_put_rem(self):
+        n = Node()
+        self.assertEqual(len(n.items), 0)
+        n.put(b'1', b'31337')
+        self.assertEqual(len(n.items), 1)
+        n.remove(b'1')
+        self.assertEqual(len(n.items), 0)
+        self.assertTupleEqual(n.to_tuple(), ())
+
+    def test_put_rem_multi(self):
+        n = Node()
+        n.put(b'1', b'31337')
+        n.put(b'0', b'1337')
+        n.remove(b'1')
+        self.assertTupleEqual(n.to_tuple(), ((b'0', b'1337'),))
+        n.remove(b'0')
+        self.assertTupleEqual(n.to_tuple(), ())
+
+        n.put(b'1', b'31337')
+        n.put(b'0', b'1337')
+        n.remove(b'0')
+        self.assertTupleEqual(n.to_tuple(), ((b'1', b'31337'),))
+        n.remove(b'1')
+        self.assertTupleEqual(n.to_tuple(), ())
 
     #def test_put_get_multi(self):
     #    # TODO double insert
