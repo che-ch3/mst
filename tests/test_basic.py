@@ -1,5 +1,7 @@
 import unittest
 from src.node import Node, Item
+from src.chunker import Chunker
+from hashlib import sha512
 
 class TestNodesBasic(unittest.TestCase):
 
@@ -8,7 +10,7 @@ class TestNodesBasic(unittest.TestCase):
         self.assertEqual(Node().items, ())
         self.assertEqual(Node().level, 0)
 
-    def test_create_from_item(self):
+    def test_create_from_pairs(self):
         self.assertIsNotNone(Node(()))
         self.assertEqual(Node().items, ())
         self.assertEqual(Node().level, 0)
@@ -24,6 +26,30 @@ class TestNodesBasic(unittest.TestCase):
         self.assertIsNotNone(n)
         self.assertTupleEqual(n.to_tuple(), pairs)
         self.assertEqual(n.level, 0)
+
+    def test_create_from_items(self):
+        pairs = ((b'0', b'1337'),)
+        items = tuple([Item(key, sha512(value).digest()) for key, value in pairs])
+        n = Node(items=items)
+        self.assertIsNotNone(n)
+        self.assertTupleEqual(n.items, items)
+        self.assertEqual(n.level, 0)
+
+        pairs = ((b'0', b'1337'), (b'1', b'31337'))
+        items = tuple([Item(key, sha512(value).digest()) for key, value in pairs])
+        n = Node(items=items)
+        self.assertIsNotNone(n)
+        self.assertTupleEqual(n.items, items)
+        self.assertEqual(n.level, 0)
+
+    def test_create_from_node(self):
+        n = Node(pairs=((b'0', b'1337'),))
+        m = Node(nodes=((b'0', n),))
+        self.assertIsNotNone(n)
+        self.assertIsNotNone(m)
+        self.assertEqual(n.level, 0)
+        self.assertEqual(m.level, 1)
+        self.assertEqual(m.get(b'0'), b'1337')
 
     def test_get_empty(self):
         self.assertFalse(Node().get(0))
@@ -99,6 +125,14 @@ class TestNodesBasic(unittest.TestCase):
         self.assertTupleEqual(n.to_tuple(), ((b'1', b'31337'),))
         n.remove(b'1')
         self.assertTupleEqual(n.to_tuple(), ())
+
+    def test_chunking(self):
+        pairs=((b'0', b'\xff\xff\xff'),
+               (b'1', (714).to_bytes(64, 'big')),
+               (b'2', (0).to_bytes(64, 'big')))
+        n = Node(pairs=pairs, chunker=Chunker(2))
+        self.assertEqual(n.level, 1)
+        self.assertTupleEqual(n.to_tuple(), pairs)
 
     #def test_put_get_multi(self):
     #    # TODO double insert
