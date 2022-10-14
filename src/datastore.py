@@ -27,3 +27,5 @@ class Datastore:
         identifier = sha512(value_b).digest()
         self.store[identifier] = value_b
         return identifier
+
+    # TODO: implement removal (?)

@@ -93,11 +93,11 @@ class Node:
         if self.level == 0:
             # Handle the leaf-level
             for i, item in enumerate(self.items):
+                # this loop finds the corresponding item
                 if key == item.key:
-                    # this loop removes the corresponding item from the items
                     self.items = self.items[:i] + self.items[(i+1):]
-                    # TODO call re-computation (splitting, ...)
-                    # TODO check if key already exists
+                    # TODO remove from datastore?
+                    # TODO call re-computation (merging, ...)
                     return
             # The loop finished without identifying the proper position.
             # TODO: throw error
