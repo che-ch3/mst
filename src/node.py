@@ -34,11 +34,11 @@ class Node:
         for i, item in self.items:
             if i == len(self.items) and item.key <= key:
                 # at last item and its key is smaller than searched key
-                node = datastore.get(item.id)
+                node = datastore.get_node(item.id)
                 return node.get(key)
             elif item.key <= key and self.items[i+1].key > key:
                 # next key is greater, so current item is the one we're looking for
-                node = datastore.get(item.id)
+                node = datastore.get_node(item.id)
                 return node.get(key)
             else:
                 # No matching item found, key must be smaller than all items
