@@ -22,8 +22,8 @@ class Datastore:
         else:
             return False
 
-    def put_node(self, value):
-        value_b = dumps(value)
+    def put_node(self, node):
+        value_b = dumps(node)
         identifier = sha512(value_b).digest()
         self.store[identifier] = value_b
         return identifier
