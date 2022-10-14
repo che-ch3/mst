@@ -57,28 +57,21 @@ class Node:
 
     def put(self, key, value):
         """Insert a key-value pair"""
-        # FIXME: readability
         if self.level == 0:
-            if self.items == ():
-                self.items = (Item(key, datastore.put(value)),)
-            else:
-                identifier = datastore.put(value)
-                marksBoundary = chunker.isBoundary(identifier)
-                for i, item in enumerate(self.items):
-                    if key < item.key:
-                        # insert key before this item
-                        self.items = self.items[:i] + (Item(key, identifier),) + self.items[i:]
-                        # TODO handle splitting node!
-                        break
-                    elif i == len(self.items) - 1:
-                        # we're at the last element and the key is still larger than the item:
-                        # insert as last element
-                        self.items = self.items + (Item(key, identifier),)
-                        # TODO handle splitting node!
-                        break
-                    else:
-                        # We're still looking for the next bigger key
-                        continue
+            # Handle the leaf-level
+            identifier = datastore.put(value)
+            marksBoundary = chunker.isBoundary(identifier)
+            for i, item in enumerate(self.items):
+                if key < item.key:
+                    # this loop inserts the new key before the first larger item it encounters
+                    self.items = self.items[:i] + (Item(key, identifier),) + self.items[i:]
+                    # TODO handle splitting node!
+                    # TODO check if key already exists
+                    return
+            # The loop finished without identifying the proper position.
+            # That means that is was greater than all items.
+            # Add it to the end.
+            self.items = self.items + (Item(key, datastore.put(value)),)
         else:
             # TODO: Non-leaf level
             pass
