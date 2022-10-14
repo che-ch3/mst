@@ -8,6 +8,23 @@ class TestNodesBasic(unittest.TestCase):
         self.assertEqual(Node().items, ())
         self.assertEqual(Node().level, 0)
 
+    def test_create_from_item(self):
+        self.assertIsNotNone(Node(()))
+        self.assertEqual(Node().items, ())
+        self.assertEqual(Node().level, 0)
+
+        pairs = ((b'0', b'1337'),)
+        n = Node(pairs=pairs)
+        self.assertIsNotNone(n)
+        self.assertTupleEqual(n.to_tuple(), pairs)
+        self.assertEqual(n.level, 0)
+
+        pairs = ((b'0', b'1337'), (b'1', b'31337'))
+        n = Node(pairs=pairs)
+        self.assertIsNotNone(n)
+        self.assertTupleEqual(n.to_tuple(), pairs)
+        self.assertEqual(n.level, 0)
+
     def test_get_empty(self):
         self.assertFalse(Node().get(0))
 

@@ -17,9 +17,14 @@ class Node:
     are sorted by ther key.
     The identifier references nodes on the next lower level. The items of the
     leafs directly point to the stored values."""
-    def __init__(self):
-        self.level:int = 0
-        self.items:tuple = ()
+    def __init__(self, level:int=0, pairs:tuple=()):
+        self.level:int = level
+        self.items = ()
+        if pairs != ():
+            # TODO implement and use bulk insert
+            for key, value in pairs:
+                self.put(key, value)
+        self.__recalculate()
 
     def __get_leaf(self, key):
         """Returns the leaf containing the key"""
