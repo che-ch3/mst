@@ -45,6 +45,12 @@ class Node:
                 # FIXME: rewrite for clarity
                 return False
 
+    def to_tuple(self):
+        if self.level == 0:
+            return tuple([(item.key, datastore.get(item.id)) for item in self.items])
+        else:
+            pass
+
     def get(self, key):
         """Get the value for a key"""
         leaf = self.__get_leaf(key)
